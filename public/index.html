@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login / Signup</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: #fff;
+            width: 400px;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            transition: 0.3s ease-in-out;
+            position: relative;
+        }
+
+        .form-container {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .form-container .form {
+            min-width: 100%;
+            transition: opacity 0.5s ease;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .password-wrapper {
+            display: flex;
+            align-items: center;
+        }
+
+        .eye-btn {
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #5a67d8, #6b46c1);
+        }
+
+        .toggle-link {
+            text-align: center;
+            display: block;
+            margin-top: 10px;
+            color: #764ba2;
+            cursor: pointer;
+        }
+
+        .response-message {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .switch-form {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+
+        .switch-form span {
+            color: #667eea;
+            margin-left: 5px;
+            font-weight: bold;
+        }
+
+        .hide {
+            transform: translateX(100%);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="form-container" id="formContainer">
+            <!-- Login Form -->
+            <div class="form" id="loginForm">
+                <h2>Login</h2>
+                <div class="form-group">
+                    <label for="loginEmail">Email:</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password:</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="loginPassword" required>
+                        <span id="loginTogglePassword" class="eye-btn">👁️</span>
+                    </div>
+                </div>
+                <button type="submit" id="loginSubmit">Login</button>
+                <div class="response-message" id="loginResponse"></div>
+                <div class="switch-form">Don't have an account?<span id="switchToSignup">Sign up</span></div>
+            </div>
+
+            <!-- Signup Form -->
+            <div class="form hide" id="signupForm">
+                <h2>Sign Up</h2>
+                <div class="form-group">
+                    <label for="signupEmail">Email:</label>
+                    <input type="email" id="signupEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword">Password:</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="signupPassword" required>
+                        <span id="signupTogglePassword" class="eye-btn">👁️</span>
+                    </div>
+                </div>
+                <button type="submit" id="signupSubmit">Sign Up</button>
+                <div class="response-message" id="signupResponse"></div>
+                <div class="switch-form">Already have an account?<span id="switchToLogin">Login</span></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle between login and signup forms
+        const loginForm = document.getElementById('loginForm');
+        const signupForm = document.getElementById('signupForm');
+        const formContainer = document.getElementById('formContainer');
+        const switchToSignup = document.getElementById('switchToSignup');
+        const switchToLogin = document.getElementById('switchToLogin');
+
+        switchToSignup.addEventListener('click', () => {
+            loginForm.style.transform = 'translateX(-150%)'; // Slide to the left
+            signupForm.style.transform = 'translateX(-100%)';    // Bring signup form to view
+        });
+
+        switchToLogin.addEventListener('click', () => {
+            signupForm.style.transform = 'translateX(50%)'; // Slide to the right
+            loginForm.style.transform = 'translateX(0)';     // Bring login form back to view
+        });
+
+        // Password visibility toggle
+        const togglePasswordVisibility = (inputId, toggleId) => {
+            const passwordInput = document.getElementById(inputId);
+            const togglePassword = document.getElementById(toggleId);
+
+            togglePassword.addEventListener('click', () => {
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    togglePassword.textContent = '🙈';
+                } else {
+                    passwordInput.type = 'password';
+                    togglePassword.textContent = '👁️';
+                }
+            });
+        };
+
+        togglePasswordVisibility('loginPassword', 'loginTogglePassword');
+        togglePasswordVisibility('signupPassword', 'signupTogglePassword');
+
+        // Handle form submissions for login
+        document.getElementById('loginSubmit').addEventListener('click', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            const query = `
+        mutation {
+            login(email: "${email}", password: "${password}") {
+                token
+            }
+        }
+    `;
+
+            // Send the GraphQL request
+            const response = await fetch('/graphql', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query })
+            });
+
+            const result = await response.json();
+
+            if (result.data && result.data.login) {
+                document.getElementById('loginResponse').textContent = `Login successful! Token: ${result.data.login.token}`;
+            } else if (result.errors) {
+                document.getElementById('loginResponse').textContent = `Error: ${result.errors[0].message}`;
+            }
+        });
+
+        // Handle form submissions for signup
+        document.getElementById('signupSubmit').addEventListener('click', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+
+            const query = `
+        mutation {
+            signup(email: "${email}", password: "${password}")
+        }
+    `;
+
+            // Send the GraphQL request
+            const response = await fetch('/graphql', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query })
+            });
+
+            const result = await response.json();
+
+            if (result.data && result.data.register) {
+                document.getElementById('signupResponse').textContent = `Signup successful! Welcome, ${email}.`;
+            } else if (result.errors) {
+                document.getElementById('signupResponse').textContent = `Error: ${result.errors[0].message}`;
+            }
+
+        });
+    </script>
+</body>
+
+</html>
